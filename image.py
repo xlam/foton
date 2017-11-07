@@ -1,3 +1,5 @@
+import json
+
 STATUS, NAME, INFO = range(3)
 STATUS_EMPTY = 0
 STATUS_PARTIAL = -1
@@ -9,7 +11,7 @@ STATUS_STR = {
     '68' : '+++',
 }
 
-LANDMARKS_FILE = 'landmarks.txt'
+LANDMARKS_FILE = 'landmarks.json'
 
 IMAGE_TYPES = (
     '.jpg',
@@ -22,6 +24,7 @@ class Image(object):
         self.name = name
         self.status = status
         self.info = info
+        self.annotations = []
 
     def __hash__(self):
         return super(Image, self).__hash__()
