@@ -3,12 +3,12 @@ import json
 STATUS, NAME, INFO = range(3)
 STATUS_EMPTY = 0
 STATUS_PARTIAL = -1
-STATUS_FULL = 68
+STATUS_FULL = 3
 
 STATUS_STR = {
     '0': '---',
     '-1': '***',
-    '68' : '+++',
+    '3' : '+++',
 }
 
 LANDMARKS_FILE = 'landmarks.json'
@@ -30,4 +30,5 @@ class Image(object):
         return super(Image, self).__hash__()
 
     def __repr__(self):
-        return 'Image: name={}, status={}'.format(self.name, self.status)
+        return 'Image: name={}, status={}, points={}'.format(
+            self.name, self.status, len(self.annotations))

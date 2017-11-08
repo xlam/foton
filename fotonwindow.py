@@ -5,6 +5,7 @@ import util
 
 
 class FotonWindow(QtGui.QMainWindow):
+
     def __init__(self):
         super(FotonWindow, self).__init__(parent=None)
         self.setWindowTitle('Foton (v' + version() + ')')
@@ -12,7 +13,18 @@ class FotonWindow(QtGui.QMainWindow):
         self.statusBar().showMessage('Готов')
         self.setupMenu()
         self.imagesTable = QtGui.QTableWidget()
-        self.setCentralWidget(self.imagesTable)
+        widget = QtGui.QWidget()
+        self.setCentralWidget(widget)
+        vbox = QtGui.QVBoxLayout()
+        hbox = QtGui.QHBoxLayout()
+        dock = QtGui.QDockWidget(self)
+        dock.setWidget(self.imagesTable)
+        dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea)
+        self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
+        hbox.addWidget(QtGui.QPushButton('Button 1'))
+        hbox.addWidget(QtGui.QPushButton('Button 2'))
+        vbox.addLayout(hbox)
+        widget.setLayout(vbox)
 
     def setupMenu(self):
 
@@ -40,7 +52,7 @@ class FotonWindow(QtGui.QMainWindow):
         self.imagesTable.setHorizontalHeaderLabels(headers)
         for row, img in enumerate(images):
             color = self.itemColor(img)
-            print('{}\t{} ({} points)'.format(row, img.name, img.status))
+            print('{}\t{} ({} points)'.format(row, img.name, len(img.annotations)))
             item = QtGui.QTableWidgetItem(image.STATUS_STR[str(img.status)])
             item.setTextColor(color)
             self.imagesTable.setItem(row, image.STATUS, item)
