@@ -40,7 +40,6 @@ class FotonWindow(QtGui.QMainWindow):
             self,
             'Выбор каталога с изображениями',
             '')
-        print(imagesDir)
         self._populateImagesTable(util.scanDirForImages(imagesDir))
 
     def _populateImagesTable(self, images):
@@ -52,7 +51,7 @@ class FotonWindow(QtGui.QMainWindow):
         self.imagesTable.setHorizontalHeaderLabels(headers)
         for row, img in enumerate(images):
             color = self.itemColor(img)
-            print('{}\t{} ({} points)'.format(row, img.name, len(img.annotations)))
+            #print('{}\t{} ({} points)'.format(row, img.name, len(img.annotations)))
             item = QtGui.QTableWidgetItem(image.STATUS_STR[str(img.status)])
             item.setTextColor(color)
             self.imagesTable.setItem(row, image.STATUS, item)

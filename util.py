@@ -10,20 +10,21 @@ def scanDirForImages(path):
     images = []
 
     annotations = loadAnnotations(path + os.sep + image.LANDMARKS_FILE)
+    savedImagesNames = annotations.keys()
 
     for fileName in files:
         for imageType in image.IMAGE_TYPES:
             if fileName.endswith(imageType):
                 img = image.Image(fileName)
-                savedImagesNames = annotations.keys()
                 if fileName in savedImagesNames:
                     a = annotations[fileName]
-                    if image.STATUS_EMPTY < len(a['points']) < image.STATUS_FULL:
+                    points = a['points']
+                    if image.STATUS_EMPTY < len(points) < image.STATUS_FULL:
                         img.status = image.STATUS_PARTIAL
-                    elif len(a['points']) == image.STATUS_FULL:
+                    elif len(points) == image.STATUS_FULL:
                         img.status = image.STATUS_FULL
-                    img.annotations = a['points']
-                print(img)
+                    img.annotations = points
+#                print(img)
                 images.append(img)
                 continue
 
@@ -31,17 +32,10 @@ def scanDirForImages(path):
 
 
 def loadAnnotations(filename):
-    anns = json.load(open(filename))
-    print(anns)
     annotations = {}
+    anns = json.load(open(filename))
+#    print(anns)
     for a in anns:
-        print(a)
+#        print(a)
         annotations[a['name']] = a
     return annotations
-
-
-def _getSavedImagesNames(annotations):
-    names = []
-    for img in annotations:
-        names.append(img[name])
-    return names
