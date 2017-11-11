@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import os
 from PyQt4 import QtGui, QtCore
 from version import version
 import image
@@ -21,8 +24,15 @@ class FotonWindow(QtGui.QMainWindow):
         dock.setWidget(self.imagesTable)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
+        imgl = QtGui.QLabel()
+        path = os.getcwd() + os.sep + 'img\\05012014817.jpg'
+        pixmap = QtGui.QPixmap(path)
+        print(path + ': (' + str(pixmap.width()) + ')')
+        imgl.setPixmap(pixmap)
+        imgl.setGeometry(10, 10, 400, 100)
+        hbox.addWidget(imgl)
         hbox.addWidget(QtGui.QPushButton('Button 1'))
-        hbox.addWidget(QtGui.QPushButton('Button 2'))
+        imgl.show()
         vbox.addLayout(hbox)
         widget.setLayout(vbox)
 
@@ -63,8 +73,8 @@ class FotonWindow(QtGui.QMainWindow):
 
     def itemColor(self, img):
         if img.status == image.STATUS_EMPTY:
-            return QtGui.QColor(120, 0, 0)
+            return QtGui.QColor(200, 0, 0)
         if img.status == image.STATUS_PARTIAL:
-            return QtGui.QColor(120, 120, 0)
+            return QtGui.QColor(0, 0, 200)
         if img.status == image.STATUS_FULL:
-            return QtGui.QColor(0, 120, 0)
+            return QtGui.QColor(0, 200, 0)
