@@ -13,6 +13,7 @@ LANDMARKS_FILE = 'landmarks.json'
 
 IMAGE_TYPES = (
     '.jpg',
+    '.png',
     '.gif',
 )
 

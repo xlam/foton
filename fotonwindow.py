@@ -16,6 +16,7 @@ class FotonWindow(QtGui.QMainWindow):
         self.statusBar().showMessage('Готов')
         self.setupMenu()
         self.imagesTable = QtGui.QTableWidget()
+        self.imageLabel = QtGui.QLabel()
         widget = QtGui.QWidget()
         self.setCentralWidget(widget)
         vbox = QtGui.QVBoxLayout()
@@ -24,23 +25,26 @@ class FotonWindow(QtGui.QMainWindow):
         dock.setWidget(self.imagesTable)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
-        imgl = QtGui.QLabel()
-        path = os.getcwd() + os.sep + 'img\\05012014817.jpg'
-        pixmap = QtGui.QPixmap(path)
-        print(path + ': (' + str(pixmap.width()) + ')')
-        imgl.setPixmap(pixmap)
-        imgl.setGeometry(10, 10, 400, 100)
-        hbox.addWidget(imgl)
-        hbox.addWidget(QtGui.QPushButton('Button 1'))
-        imgl.show()
+        hbox.addWidget(self.imageLabel)
         vbox.addLayout(hbox)
         widget.setLayout(vbox)
+        self.imagesTable.currentCellChanged.connect(self.showImage)
+        self.workingDir = os.getcwd()
+        self.currentImageName = ''
 
+    def showImage(self, row, col, oldRow, oldCol):
+        nameItem = self.imagesTable.item(row, image.NAME)
+        name = nameItem.text()
+        if self.currentImageName != name:
+            path = self.workingDir + os.sep + name
+            pixmap = QtGui.QPixmap.fromImage(QtGui.QImage(path))
+            print('Loading image: {} ({}x{})'.format(path, str(pixmap.width()), str(pixmap.height())))
+            self.imageLabel.setPixmap(pixmap)
+            self.currentImageName = name
+    
     def setupMenu(self):
-
         menu = QtGui.QMenu('Файл', self)
         self.menuBar().addMenu(menu)
-
         self.actionOpen = QtGui.QAction('Выбрать каталог', self)
         self.actionOpen.triggered.connect(self.fileOpen)
         menu.addAction(self.actionOpen)
@@ -50,6 +54,7 @@ class FotonWindow(QtGui.QMainWindow):
             self,
             'Выбор каталога с изображениями',
             '')
+        self.workingDir = imagesDir
         self._populateImagesTable(util.scanDirForImages(imagesDir))
 
     def _populateImagesTable(self, images):
