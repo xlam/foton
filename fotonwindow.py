@@ -25,10 +25,15 @@ class FotonWindow(QtGui.QMainWindow):
         dock.setWidget(self.imagesTable)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
+        hbox.addStretch()
         hbox.addWidget(self.imageLabel)
+        hbox.addStretch()
+        vbox.addStretch()
         vbox.addLayout(hbox)
+        vbox.addStretch()
         widget.setLayout(vbox)
         self.imagesTable.currentCellChanged.connect(self.showImage)
+        self.imageLabel.mousePressEvent = self.getPos
         self.workingDir = os.getcwd()
         self.currentImageName = ''
 
@@ -41,6 +46,9 @@ class FotonWindow(QtGui.QMainWindow):
             print('Loading image: {} ({}x{})'.format(path, str(pixmap.width()), str(pixmap.height())))
             self.imageLabel.setPixmap(pixmap)
             self.currentImageName = name
+
+    def getPos(self, event):
+        print('image clicked at pos ({},{})'.format(event.pos().x(), event.pos().y()))
     
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)
