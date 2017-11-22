@@ -33,23 +33,33 @@ class FotonWindow(QtGui.QMainWindow):
         vbox.addStretch()
         widget.setLayout(vbox)
         self.imagesTable.currentCellChanged.connect(self.showImage)
-        self.imageLabel.mousePressEvent = self.getPos
+        self.imageLabel.mousePressEvent = self.draw
         self.workingDir = os.getcwd()
         self.currentImageName = ''
+        self.img = None
 
     def showImage(self, row, col, oldRow, oldCol):
         nameItem = self.imagesTable.item(row, image.NAME)
         name = nameItem.text()
         if self.currentImageName != name:
             path = self.workingDir + os.sep + name
-            pixmap = QtGui.QPixmap.fromImage(QtGui.QImage(path))
+            self.img = QtGui.QImage(path)
+            pixmap = QtGui.QPixmap.fromImage(self.img)
             print('Loading image: {} ({}x{})'.format(path, str(pixmap.width()), str(pixmap.height())))
             self.imageLabel.setPixmap(pixmap)
             self.currentImageName = name
 
-    def getPos(self, event):
-        print('image clicked at pos ({},{})'.format(event.pos().x(), event.pos().y()))
-    
+    def draw(self, event) :
+        print('image clicked at pos ({};{})'.format(event.pos().x(), event.pos().y()))
+        self.drawPoint(event.pos().x(), event.pos().y())
+
+    def drawPoint(self, x, y):
+        painter = QtGui.QPainter()
+        painter.begin(self.img)
+        painter.drawEllipse(QtCore.QPointF(x, y), 5, 5)
+        painter.end()
+        self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(self.img))
+
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)
         self.menuBar().addMenu(menu)
