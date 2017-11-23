@@ -29,24 +29,34 @@ class ImageTest(unittest.TestCase):
                 }
             ]
         }
-        self.annotations = [
+        self.annotations_1 = [
             {
                 "id": "1",
                 "x": "5",
-                "y": "5"
+                "y": "10"
+            }
+        ]
+        self.annotations_2 = [
+            {
+                "id": "1",
+                "x": "10",
+                "y": "15"
             }
         ]
         self.image = image.Image('testimage.jpg')
 
     def tearDown(self):
         del self.imageSet
-        del self.annotations
+        del self.annotations_1
+        del self.annotations_2
         del self.image
 
-    def testImageAddAnnotation(self):
-        id, x, y = 1, 5, 5
-        self.image.addAnnotation(id, x, y)
-        self.assertEqual(self.image.annotations(), self.annotations)
+    def testImageAddAndUpdateAnnotation(self):
+        id = 1
+        self.image.addAnnotation(id, 5, 10)
+        self.assertEqual(self.image.annotations(), self.annotations_1)
+        self.image.addAnnotation(id, 10, 15)
+        self.assertEqual(self.image.annotations(), self.annotations_2)
 
 
 if __name__ == '__main__':
