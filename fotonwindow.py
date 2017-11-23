@@ -37,6 +37,7 @@ class FotonWindow(QtGui.QMainWindow):
         self.workingDir = os.getcwd()
         self.currentImageName = ''
         self.img = None
+        self.images = None
 
     def showImage(self, row, col, oldRow, oldCol):
         nameItem = self.imagesTable.item(row, image.NAME)
@@ -59,6 +60,7 @@ class FotonWindow(QtGui.QMainWindow):
         painter.drawEllipse(QtCore.QPointF(x, y), 5, 5)
         painter.end()
         self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(self.img))
+        name = self.currentImageName
 
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)
@@ -73,7 +75,8 @@ class FotonWindow(QtGui.QMainWindow):
             'Выбор каталога с изображениями',
             '')
         self.workingDir = imagesDir
-        self._populateImagesTable(util.scanDirForImages(imagesDir))
+        self.images = util.scanDirForImages(imagesDir)
+        self._populateImagesTable(self.images)
 
     def _populateImagesTable(self, images):
         self.imagesTable.clear()
