@@ -20,18 +20,27 @@ IMAGE_TYPES = (
 
 class Image(object):
 
-    def __init__(self, name, status=STATUS_EMPTY, info=''):
+    def __init__(self, name, status = STATUS_EMPTY, info = ''):
         self.name = name
         self.status = status
         self.info = info
-        self.annotations = {}
+        self._annotations = {}
 
     def __hash__(self):
         return super(Image, self).__hash__()
 
     def __repr__(self):
         return 'Image: name={}, status={}, points={}'.format(
-            self.name, self.status, len(self.annotations))
+            self.name, self.status, len(self._annotations))
+
+    def addAnnotation(self, id, x, y):
+        self._annotations[str(id)] = (str(x), str(y))
+
+    def annotations(self):
+        anns = []
+        for id, coords in self._annotations.items():
+            anns.append({'id': id, 'x': coords[0], 'y': coords[1]})
+        return anns
 
 
 class ImageContainer(object):
