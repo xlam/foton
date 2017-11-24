@@ -33,14 +33,20 @@ class Image(object):
         return 'Image: name={}, status={}, points={}'.format(
             self.name, self.status, len(self._annotations))
 
-    def addAnnotation(self, id, x, y):
-        self._annotations[str(id)] = (str(x), str(y))
-
     def annotations(self):
         anns = []
         for id, coords in self._annotations.items():
             anns.append({'id': id, 'x': coords[0], 'y': coords[1]})
         return anns
+
+    def len(self):
+        return len(self._annotations)
+
+    def addAnnotation(self, id, x, y):
+        self._annotations[str(id)] = (str(x), str(y))
+
+    def deleteAnnotation(self, id):
+        del self._annotations[str(id)]
 
 
 class ImageContainer(object):
