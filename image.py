@@ -22,7 +22,6 @@ class Image(object):
 
     def __init__(self, name, status = STATUS_EMPTY, info = ''):
         self.name = name
-        self.status = status
         self.info = info
         self._annotations = {}
 
@@ -39,11 +38,21 @@ class Image(object):
             anns.append({'id': id, 'x': coords[0], 'y': coords[1]})
         return anns
 
+    def status(self):
+        length = len(self._annotations)
+        if (length == STATUS_EMPTY):
+            return STATUS_EMPTY
+        elif (length < STATUS_FULL):
+            return STATUS_PARTIAL
+        elif (length == STATUS_FULL):
+            return STATUS_FULL
+
     def len(self):
         return len(self._annotations)
 
     def addAnnotation(self, id, x, y):
-        self._annotations[str(id)] = (str(x), str(y))
+        if (STATUS_EMPTY < id <= STATUS_FULL ):
+            self._annotations[str(id)] = (str(x), str(y))
 
     def deleteAnnotation(self, id):
         del self._annotations[str(id)]

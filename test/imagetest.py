@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(currentdir))
 import unittest
 import image
 
-class ImageTest(unittest.TestCase):
+class imageTest(unittest.TestCase):
 
     def setUp(self):
 
@@ -65,26 +65,42 @@ class ImageTest(unittest.TestCase):
             ]
         )
 
-        self.image = image.Image('testimage.jpg')
+        self.i = image.Image('testimage.jpg')
 
     def tearDown(self):
         del self.imageSet
         del self.annotations
-        del self.image
+        del self.i
 
     def testImageAddAndUpdateAnnotation(self):
         id = 1
-        self.image.addAnnotation(id, 5, 10)
-        self.assertEqual(self.image.annotations(), self.annotations[0])
-        self.image.addAnnotation(id, 10, 15)
-        self.assertEqual(self.image.annotations(), self.annotations[1])
+        self.i.addAnnotation(id, 5, 10)
+        self.assertEqual(self.i.annotations(), self.annotations[0])
+        self.i.addAnnotation(id, 10, 15)
+        self.assertEqual(self.i.annotations(), self.annotations[1])
+
+    def testImageDoesNotAddInvalidIndex(self):
+        self.assertEqual(self.i.len(), 0)
+        self.i.addAnnotation(-1, 0, 0)
+        self.i.addAnnotation(0, 0, 0)
+        self.i.addAnnotation(4, 0, 0)
+        self.assertEqual(self.i.len(), 0)
 
     def testImageDeleteAnnotation(self):
-        self.image.addAnnotation(1, 5, 5)
-        self.image.addAnnotation(2, 10, 10)
-        self.image.addAnnotation(3, 15, 15)
-        self.image.deleteAnnotation(2)
-        self.assertEqual(self.image.len(), 2)
+        self.i.addAnnotation(1, 5, 5)
+        self.i.addAnnotation(2, 10, 10)
+        self.i.addAnnotation(3, 15, 15)
+        self.i.deleteAnnotation(2)
+        self.assertEqual(self.i.len(), 2)
+
+    def testImageStatus(self):
+        self.assertEqual(self.i.status(), image.STATUS_EMPTY)
+        self.i.addAnnotation(1, 5, 5)
+        self.assertEqual(self.i.status(), image.STATUS_PARTIAL)
+        self.i.addAnnotation(2, 10, 10)
+        self.assertEqual(self.i.status(), image.STATUS_PARTIAL)
+        self.i.addAnnotation(3, 15, 15)
+        self.assertEqual(self.i.status(), image.STATUS_FULL)
 
 
 if __name__ == '__main__':
