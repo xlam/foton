@@ -20,9 +20,8 @@ IMAGE_TYPES = (
 
 class Image(object):
 
-    def __init__(self, name, status = STATUS_EMPTY, info = ''):
+    def __init__(self, name):
         self.name = name
-        self.info = info
         self._annotations = {}
 
     def __hash__(self):
@@ -30,7 +29,7 @@ class Image(object):
 
     def __repr__(self):
         return 'Image: name={}, status={}, points={}'.format(
-            self.name, self.status, len(self._annotations))
+            self.name, self.status(), len(self._annotations))
 
     def annotations(self):
         anns = []
@@ -49,6 +48,10 @@ class Image(object):
 
     def len(self):
         return len(self._annotations)
+
+    def setJsonAnnotations(self, json):
+        for a in json:
+            self.addAnnotation(int(a['id']), int(a['x']), int(a['y']))
 
     def addAnnotation(self, id, x, y):
         if (STATUS_EMPTY < id <= STATUS_FULL ):

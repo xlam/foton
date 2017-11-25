@@ -18,12 +18,7 @@ def scanDirForImages(path):
                 img = image.Image(fileName)
                 if fileName in savedImagesNames:
                     a = annotations[fileName]
-                    points = a['points']
-                    if image.STATUS_EMPTY < len(points) < image.STATUS_FULL:
-                        img.status = image.STATUS_PARTIAL
-                    elif len(points) == image.STATUS_FULL:
-                        img.status = image.STATUS_FULL
-                    img.annotations = points
+                    img.setJsonAnnotations(a['points'])
                 print(img)
                 images.append(img)
                 continue

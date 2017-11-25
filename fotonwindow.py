@@ -88,7 +88,7 @@ class FotonWindow(QtGui.QMainWindow):
         for row, img in enumerate(images):
             color = self.itemColor(img)
             #print('{}\t{} ({} points)'.format(row, img.name, len(img.annotations)))
-            item = QtGui.QTableWidgetItem(image.STATUS_STR[str(img.status)])
+            item = QtGui.QTableWidgetItem(image.STATUS_STR[str(img.status())])
             item.setTextColor(color)
             self.imagesTable.setItem(row, image.STATUS, item)
             item = QtGui.QTableWidgetItem(img.name)
@@ -98,9 +98,9 @@ class FotonWindow(QtGui.QMainWindow):
         # resize
 
     def itemColor(self, img):
-        if img.status == image.STATUS_EMPTY:
+        if img.status() == image.STATUS_EMPTY:
             return QtGui.QColor(200, 0, 0)
-        if img.status == image.STATUS_PARTIAL:
+        if img.status() == image.STATUS_PARTIAL:
             return QtGui.QColor(0, 0, 200)
-        if img.status == image.STATUS_FULL:
+        if img.status() == image.STATUS_FULL:
             return QtGui.QColor(0, 200, 0)

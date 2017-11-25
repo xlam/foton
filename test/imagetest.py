@@ -102,6 +102,10 @@ class imageTest(unittest.TestCase):
         self.i.addAnnotation(3, 15, 15)
         self.assertEqual(self.i.status(), image.STATUS_FULL)
 
+    def testImageSetJsonAnnotations(self):
+        self.i.setJsonAnnotations(self.annotations[2])
+        self.assertEqual(sorted(self.i.annotations()), sorted(self.annotations[2]))
+
 
 if __name__ == '__main__':
     unittest.main()
