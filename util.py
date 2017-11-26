@@ -7,7 +7,7 @@ import image
 
 def scanDirForImages(path):
     files = os.listdir(path)
-    images = []
+    images = image.ImageContainer()
 
     annotations = loadAnnotations(path + os.sep + image.LANDMARKS_FILE)
     savedImagesNames = annotations.keys()
@@ -20,7 +20,7 @@ def scanDirForImages(path):
                     a = annotations[fileName]
                     img.setJsonAnnotations(a['points'])
                 print(img)
-                images.append(img)
+                images.add(img)
                 continue
 
     return images
@@ -31,6 +31,6 @@ def loadAnnotations(filename):
     anns = json.load(open(filename))
 #    print(anns)
     for a in anns:
-#        print(a)
+        #        print(a)
         annotations[a['name']] = a
     return annotations

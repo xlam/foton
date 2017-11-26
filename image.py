@@ -1,12 +1,12 @@
 STATUS, NAME, INFO = range(3)
 STATUS_EMPTY = 0
 STATUS_PARTIAL = -1
-STATUS_FULL = 3
+STATUS_FULL = 68
 
 STATUS_STR = {
     '0': '---',
     '-1': '***',
-    '3': '+++',
+    '68': '+++',
 }
 
 LANDMARKS_FILE = 'landmarks.json'
@@ -35,6 +35,9 @@ class Image(object):
         return len(self._annotations)
 
     def annotations(self):
+        return self._annotations.items()
+
+    def jsonAnnotations(self):
         anns = []
         for id, coords in self._annotations.items():
             anns.append({'id': id, 'x': coords[0], 'y': coords[1]})
@@ -57,7 +60,7 @@ class Image(object):
             self.addAnnotation(int(a['id']), int(a['x']), int(a['y']))
 
     def addAnnotation(self, id, x, y):
-        if (STATUS_EMPTY < id <= STATUS_FULL):
+        if (1 <= id <= STATUS_FULL):
             self._annotations[str(id)] = (str(x), str(y))
 
     def deleteAnnotation(self, id):

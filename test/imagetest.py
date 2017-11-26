@@ -78,15 +78,15 @@ class imageTest(unittest.TestCase):
     def testImageAddAndUpdateAnnotation(self):
         id = 1
         self.i.addAnnotation(id, 5, 10)
-        self.assertEqual(self.i.annotations(), self.annotations[0])
+        self.assertEqual(self.i.jsonAnnotations(), self.annotations[0])
         self.i.addAnnotation(id, 10, 15)
-        self.assertEqual(self.i.annotations(), self.annotations[1])
+        self.assertEqual(self.i.jsonAnnotations(), self.annotations[1])
 
     def testImageDoesNotAddInvalidIndex(self):
         self.assertEqual(len(self.i), 0)
-        self.i.addAnnotation(-1, 0, 0)
-        self.i.addAnnotation(0, 0, 0)
-        self.i.addAnnotation(4, 0, 0)
+        self.i.addAnnotation(image.STATUS_PARTIAL, 0, 0)
+        self.i.addAnnotation(image.STATUS_EMPTY, 0, 0)
+        self.i.addAnnotation(image.STATUS_FULL + 1, 0, 0)
         self.assertEqual(len(self.i), 0)
 
     def testImageDeleteAnnotation(self):
@@ -102,12 +102,13 @@ class imageTest(unittest.TestCase):
         self.assertEqual(self.i.status(), image.STATUS_PARTIAL)
         self.i.addAnnotation(2, 10, 10)
         self.assertEqual(self.i.status(), image.STATUS_PARTIAL)
-        self.i.addAnnotation(3, 15, 15)
+        for id in range(image.STATUS_FULL + 1):
+            self.i.addAnnotation(id, 20, 20)
         self.assertEqual(self.i.status(), image.STATUS_FULL)
 
     def testImageSetJsonAnnotations(self):
         self.i.setJsonAnnotations(self.annotations[2])
-        self.assertTrue(self.i.annotations() == self.annotations[2])
+        self.assertTrue(self.i.jsonAnnotations() == self.annotations[2])
 
 
 if __name__ == '__main__':

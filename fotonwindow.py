@@ -48,9 +48,12 @@ class FotonWindow(QtGui.QMainWindow):
             pixmap = QtGui.QPixmap.fromImage(self.img)
             print('Loading image: {} ({}x{})'.format(path, str(pixmap.width()), str(pixmap.height())))
             self.imageLabel.setPixmap(pixmap)
+            img = self.images.image(nameItem.data(QtCore.Qt.UserRole))
+            for id, coords in img.annotations():
+                self.drawPoint(int(coords[0]), int(coords[1]))
             self.currentImageName = name
 
-    def draw(self, event) :
+    def draw(self, event):
         print('image clicked at pos ({};{})'.format(event.pos().x(), event.pos().y()))
         self.drawPoint(event.pos().x(), event.pos().y())
 
@@ -86,11 +89,11 @@ class FotonWindow(QtGui.QMainWindow):
         self.imagesTable.setHorizontalHeaderLabels(headers)
         for row, img in enumerate(images):
             color = self.itemColor(img)
-            #print('{}\t{} ({} points)'.format(row, img.name, len(img.annotations)))
             item = QtGui.QTableWidgetItem(image.STATUS_STR[str(img.status())])
             item.setTextColor(color)
             self.imagesTable.setItem(row, image.STATUS, item)
             item = QtGui.QTableWidgetItem(img.name)
+            item.setData(QtCore.Qt.UserRole, int(id(img)))
             item.setTextColor(color)
             self.imagesTable.setItem(row, image.NAME, item)
         self.imagesTable.setSortingEnabled(True)
