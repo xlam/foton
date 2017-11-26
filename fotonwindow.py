@@ -35,23 +35,23 @@ class FotonWindow(QtGui.QMainWindow):
         self.imagesTable.currentCellChanged.connect(self.showImage)
         self.imageLabel.mousePressEvent = self.draw
         self.workingDir = os.getcwd()
-        self.currentImageName = ''
-        self.img = None
+        self.currentImage = None
+        self.qtImage = None
         self.images = None
 
     def showImage(self, row, col, oldRow, oldCol):
-        nameItem = self.imagesTable.item(row, image.NAME)
-        name = nameItem.text()
-        if self.currentImageName != name:
-            path = self.workingDir + os.sep + name
-            self.img = QtGui.QImage(path)
-            pixmap = QtGui.QPixmap.fromImage(self.img)
-            print('Loading image: {} ({}x{})'.format(path, str(pixmap.width()), str(pixmap.height())))
-            self.imageLabel.setPixmap(pixmap)
-            img = self.images.image(nameItem.data(QtCore.Qt.UserRole))
-            for id, coords in img.annotations():
-                self.drawPoint(int(coords[0]), int(coords[1]))
-            self.currentImageName = name
+        item = self.imagesTable.item(row, image.NAME)
+        img = self.images.image(item.data(QtCore.Qt.UserRole))
+        if img == self.currentImage:
+            return
+        path = self.workingDir + os.sep + img.name
+        self.qtImage = QtGui.QImage(path)
+        pixmap = QtGui.QPixmap.fromImage(self.qtImage)
+        print('Loading image: {} ({}x{})'.format(path, str(pixmap.width()), str(pixmap.height())))
+        self.imageLabel.setPixmap(pixmap)
+        for id, coords in img.annotations():
+            self.drawPoint(int(coords[0]), int(coords[1]))
+        self.currentImage = img
 
     def draw(self, event):
         print('image clicked at pos ({};{})'.format(event.pos().x(), event.pos().y()))
@@ -59,10 +59,10 @@ class FotonWindow(QtGui.QMainWindow):
 
     def drawPoint(self, x, y):
         painter = QtGui.QPainter()
-        painter.begin(self.img)
+        painter.begin(self.qtImage)
         painter.drawEllipse(QtCore.QPointF(x, y), 5, 5)
         painter.end()
-        self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(self.img))
+        self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(self.qtImage))
 
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)

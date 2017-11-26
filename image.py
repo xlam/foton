@@ -40,7 +40,7 @@ class Image(object):
     def jsonAnnotations(self):
         anns = []
         for id, coords in self._annotations.items():
-            anns.append({'id': id, 'x': coords[0], 'y': coords[1]})
+            anns.append({'id': str(id), 'x': str(coords[0]), 'y': str(coords[1])})
         return anns
 
     def status(self):
@@ -57,14 +57,14 @@ class Image(object):
 
     def setJsonAnnotations(self, json):
         for a in json:
-            self.addAnnotation(int(a['id']), int(a['x']), int(a['y']))
+            self.addAnnotation(a['id'], a['x'], a['y'])
 
     def addAnnotation(self, id, x, y):
-        if (1 <= id <= STATUS_FULL):
-            self._annotations[str(id)] = (str(x), str(y))
+        if (1 <= int(id) <= STATUS_FULL):
+            self._annotations[int(id)] = (int(x), int(y))
 
     def deleteAnnotation(self, id):
-        del self._annotations[str(id)]
+        del self._annotations[int(id)]
 
 
 class ImageContainer(object):
