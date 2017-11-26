@@ -31,6 +31,9 @@ class Image(object):
         return 'Image: name={}, status={}, points={}'.format(
             self.name, self.status(), len(self._annotations))
 
+    def __len__(self):
+        return len(self._annotations)
+
     def annotations(self):
         anns = []
         for id, coords in self._annotations.items():
@@ -54,7 +57,7 @@ class Image(object):
             self.addAnnotation(int(a['id']), int(a['x']), int(a['y']))
 
     def addAnnotation(self, id, x, y):
-        if (STATUS_EMPTY < id <= STATUS_FULL ):
+        if (STATUS_EMPTY < id <= STATUS_FULL):
             self._annotations[str(id)] = (str(x), str(y))
 
     def deleteAnnotation(self, id):
@@ -63,7 +66,7 @@ class Image(object):
 
 class ImageContainer(object):
 
-    def __init__(self, filename = ''):
+    def __init__(self, filename=''):
         self.filename = filename
         self.dirty = False
         self.images = {}
@@ -76,7 +79,7 @@ class ImageContainer(object):
         self.dirty = True
 
     def remove(self, image):
-        self.images.remove(id(image))
+        del self.images[id(image)]
         del image
         self.dirty = True
 

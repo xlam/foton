@@ -60,7 +60,6 @@ class FotonWindow(QtGui.QMainWindow):
         painter.drawEllipse(QtCore.QPointF(x, y), 5, 5)
         painter.end()
         self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(self.img))
-        name = self.currentImageName
 
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)

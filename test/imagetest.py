@@ -1,10 +1,13 @@
-import os,sys,inspect
+import os
+import sys
+import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(os.path.dirname(currentdir))
 
 import unittest
 import image
+
 
 class imageTest(unittest.TestCase):
 
@@ -80,18 +83,18 @@ class imageTest(unittest.TestCase):
         self.assertEqual(self.i.annotations(), self.annotations[1])
 
     def testImageDoesNotAddInvalidIndex(self):
-        self.assertEqual(self.i.len(), 0)
+        self.assertEqual(len(self.i), 0)
         self.i.addAnnotation(-1, 0, 0)
         self.i.addAnnotation(0, 0, 0)
         self.i.addAnnotation(4, 0, 0)
-        self.assertEqual(self.i.len(), 0)
+        self.assertEqual(len(self.i), 0)
 
     def testImageDeleteAnnotation(self):
         self.i.addAnnotation(1, 5, 5)
         self.i.addAnnotation(2, 10, 10)
         self.i.addAnnotation(3, 15, 15)
         self.i.deleteAnnotation(2)
-        self.assertEqual(self.i.len(), 2)
+        self.assertEqual(len(self.i), 2)
 
     def testImageStatus(self):
         self.assertEqual(self.i.status(), image.STATUS_EMPTY)
@@ -105,6 +108,7 @@ class imageTest(unittest.TestCase):
     def testImageSetJsonAnnotations(self):
         self.i.setJsonAnnotations(self.annotations[2])
         self.assertTrue(self.i.annotations() == self.annotations[2])
+
 
 if __name__ == '__main__':
     unittest.main()
