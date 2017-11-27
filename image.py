@@ -1,12 +1,12 @@
 STATUS, NAME, INFO = range(3)
 STATUS_EMPTY = 0
 STATUS_PARTIAL = -1
-STATUS_FULL = 68
+STATUS_FULL = 6
 
 STATUS_STR = {
-    '0': '---',
-    '-1': '***',
-    '68': '+++',
+    str(STATUS_EMPTY): '---',
+    str(STATUS_PARTIAL): '***',
+    str(STATUS_FULL): '+++',
 }
 
 LANDMARKS_FILE = 'landmarks.json'
