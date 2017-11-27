@@ -12,11 +12,12 @@ class FotonWindow(QtGui.QMainWindow):
     def __init__(self):
         super(FotonWindow, self).__init__(parent=None)
         self.setWindowTitle('Foton (v' + version() + ')')
-        self.resize(600, 300)
+        self.resize(800, 600)
         self.statusBar().showMessage('Готов')
         self.setupMenu()
         self.imagesTable = QtGui.QTableWidget()
         self.imageLabel = QtGui.QLabel()
+        self.currentIdLabel = QtGui.QLabel()
         widget = QtGui.QWidget()
         self.setCentralWidget(widget)
         vbox = QtGui.QVBoxLayout()
@@ -28,6 +29,14 @@ class FotonWindow(QtGui.QMainWindow):
         hbox.addStretch()
         hbox.addWidget(self.imageLabel)
         hbox.addStretch()
+        self.currentIdLabel.setText('Номер точки: <не выбрано>')
+        vbox.addWidget(self.currentIdLabel)
+        hboxIds = QtGui.QHBoxLayout()
+        for i in range(6):
+            b = QtGui.QPushButton(str(i + 1))
+            b.clicked.connect(self.idButtonClick)
+            hboxIds.addWidget(b)
+        vbox.addLayout(hboxIds)
         vbox.addStretch()
         vbox.addLayout(hbox)
         vbox.addStretch()
@@ -38,6 +47,10 @@ class FotonWindow(QtGui.QMainWindow):
         self.currentImage = None
         self.qtImage = None
         self.images = None
+
+    def idButtonClick(self):
+        text = self.sender().text()
+        self.currentIdLabel.setText('Номер точки: ' + text)
 
     def showImage(self, row, col, oldRow, oldCol):
         item = self.imagesTable.item(row, image.NAME)
