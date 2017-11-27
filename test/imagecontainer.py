@@ -1,11 +1,11 @@
 import os
 import sys
 import inspect
+import unittest
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(os.path.dirname(currentdir))
 
-import unittest
 import image
 
 
@@ -30,6 +30,11 @@ class imageContainerTest(unittest.TestCase):
         self.assertEqual(len(self.ic), 2)
         self.ic.remove(i2)
         self.assertEqual(len(self.ic), 1)
+
+    @unittest.skip('Not implemented')
+    def testImageContainerLoad(self):
+        self.ic.load('img')
+        self.assertEqual(len(self.ic), 5)
 
 
 if __name__ == '__main__':

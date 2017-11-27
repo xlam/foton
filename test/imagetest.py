@@ -1,11 +1,11 @@
 import os
 import sys
 import inspect
+import unittest
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(os.path.dirname(currentdir))
 
-import unittest
 import image
 
 
