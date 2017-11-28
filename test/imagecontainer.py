@@ -9,7 +9,7 @@ sys.path.append(os.path.dirname(currentdir))
 import image
 
 
-class imageContainerTest(unittest.TestCase):
+class ImageContainerTest(unittest.TestCase):
 
     def setUp(self):
         self.ic = image.ImageContainer()
