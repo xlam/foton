@@ -5,6 +5,7 @@ from PyQt4 import QtGui, QtCore
 from version import version
 import image
 import util
+import scene
 
 
 class FotonWindow(QtGui.QMainWindow):
@@ -16,20 +17,26 @@ class FotonWindow(QtGui.QMainWindow):
         self.statusBar().showMessage('Готов')
         self.setupMenu()
         self.imagesTable = QtGui.QTableWidget()
-        self.imageLabel = QtGui.QLabel()
         self.currentIdLabel = QtGui.QLabel()
         widget = QtGui.QWidget()
         self.setCentralWidget(widget)
-        vbox = QtGui.QVBoxLayout()
-        hbox = QtGui.QHBoxLayout()
+
         dock = QtGui.QDockWidget(self)
         dock.setWidget(self.imagesTable)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
-        hbox.addStretch()
-        hbox.addWidget(self.imageLabel)
-        hbox.addStretch()
+
+        self.scene = scene.Scene()
+        self.scene.setSceneRect(QtCore.QRectF(0, 0, 800, 600))
+        self.view = QtGui.QGraphicsView(self.scene)
+
         self.currentIdLabel.setText('Номер точки: <не выбрано>')
+
+        vbox = QtGui.QVBoxLayout()
+        hbox = QtGui.QHBoxLayout()
+        hbox.addStretch()
+        hbox.addWidget(self.view)
+        hbox.addStretch()
         vbox.addWidget(self.currentIdLabel)
         hboxIds = QtGui.QHBoxLayout()
         for i in range(6):
@@ -41,8 +48,7 @@ class FotonWindow(QtGui.QMainWindow):
         vbox.addLayout(hbox)
         vbox.addStretch()
         widget.setLayout(vbox)
-        self.imagesTable.currentCellChanged.connect(self.showImage)
-        self.imageLabel.mousePressEvent = self.draw
+        self.imagesTable.currentCellChanged.connect(self.imageChanged)
         self.workingDir = os.getcwd()
         self.currentImage = None
         self.qtImage = None
@@ -52,7 +58,7 @@ class FotonWindow(QtGui.QMainWindow):
         text = self.sender().text()
         self.currentIdLabel.setText('Номер точки: ' + text)
 
-    def showImage(self, row, col, oldRow, oldCol):
+    def imageChanged(self, row, col, oldRow, oldCol):
         item = self.imagesTable.item(row, image.NAME)
         img = self.images.image(item.data(QtCore.Qt.UserRole))
         if img == self.currentImage:
@@ -60,8 +66,11 @@ class FotonWindow(QtGui.QMainWindow):
         path = self.workingDir + os.sep + img.name
         self.qtImage = QtGui.QImage(path)
         pixmap = QtGui.QPixmap.fromImage(self.qtImage)
-        print('Loading image: {} ({}x{})'.format(path, str(pixmap.width()), str(pixmap.height())))
-        self.imageLabel.setPixmap(pixmap)
+        print('Loading image: {} ({}x{})'.format(
+            path, str(pixmap.width()), str(pixmap.height())))
+        self.scene.clear()
+        self.scene.addPixmap(pixmap)
+        # self.scene.setSceneRect(p.boundingRect())
         for id, coords in img.annotations():
             self.drawPoint(int(coords[0]), int(coords[1]))
         self.currentImage = img
@@ -71,11 +80,9 @@ class FotonWindow(QtGui.QMainWindow):
         self.drawPoint(event.pos().x(), event.pos().y())
 
     def drawPoint(self, x, y):
-        painter = QtGui.QPainter()
-        painter.begin(self.qtImage)
-        painter.drawEllipse(QtCore.QPointF(x, y), 5, 5)
-        painter.end()
-        self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(self.qtImage))
+        e = self.scene.addEllipse(x, y, 10, 10)
+        e.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        e.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)

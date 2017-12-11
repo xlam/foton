@@ -36,6 +36,17 @@ class ImageContainerTest(unittest.TestCase):
         self.ic.load('img')
         self.assertEqual(len(self.ic), 5)
 
+    def testPersistantPickle(self):
+        i1 = image.Image('image.jpg')
+        i2 = image.Image('image.jpg')
+        self.ic.add(i1)
+        self.ic.add(i2)
+        filename = os.path.abspath(os.getcwd() + os.sep + 'files/save.ftn')
+        self.ic.savePickle(filename)
+        ic2 = image.ImageContainer()
+        ic2.loadPickle(filename)
+        self.assertTrue(self.ic.images.values() == ic2.images.values())
+
 
 if __name__ == '__main__':
     unittest.main()
