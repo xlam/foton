@@ -88,17 +88,34 @@ class FotonWindow(QtGui.QMainWindow):
         menu = QtGui.QMenu('Файл', self)
         self.menuBar().addMenu(menu)
         self.actionOpen = QtGui.QAction('Выбрать каталог', self)
+        self.actionSave = QtGui.QAction('Сохранить', self)
+        self.actionExport = QtGui.QAction('Экспорт в JSON', self)
         self.actionOpen.triggered.connect(self.fileOpen)
+        self.actionSave.triggered.connect(self.fileSave)
+        self.actionExport.triggered.connect(self.fileExport)
         menu.addAction(self.actionOpen)
+        menu.addAction(self.actionSave)
+        menu.addAction(self.actionExport)
 
     def fileOpen(self):
         imagesDir = QtGui.QFileDialog.getExistingDirectory(
-            self,
+            None,
             'Выбор каталога с изображениями',
             '')
         self.workingDir = imagesDir
         self.images = util.scanDirForImages(imagesDir)
         self._populateImagesTable(self.images)
+
+    def fileSave(self):
+        filename = QtGui.QFileDialog.getSaveFileName(
+            None,
+            'Сохранить',
+            os.getcwd())
+        if(filename):
+            self.images.saveToPickle(filename)
+
+    def fileExport(self):
+        pass
 
     def _populateImagesTable(self, images):
         self.imagesTable.clear()
