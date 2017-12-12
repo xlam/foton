@@ -13,6 +13,7 @@ class ImageContainerTest(unittest.TestCase):
 
     def setUp(self):
         self.ic = image.ImageContainer()
+        self.files = os.path.abspath(os.getcwd() + os.sep + 'files')
 
     def tearDown(self):
         del self.ic
@@ -31,21 +32,17 @@ class ImageContainerTest(unittest.TestCase):
         self.ic.remove(i2)
         self.assertEqual(len(self.ic), 1)
 
-    @unittest.skip('Not implemented')
-    def testImageContainerLoad(self):
-        self.ic.load('img')
-        self.assertEqual(len(self.ic), 5)
-
-    def testPersistantPickle(self):
-        i1 = image.Image('image.jpg')
-        i2 = image.Image('image.jpg')
-        self.ic.add(i1)
-        self.ic.add(i2)
-        filename = os.path.abspath(os.getcwd() + os.sep + 'files/save.ftn')
-        self.ic.savePickle(filename)
+    def testPicklePersistance(self):
+        self.ic.add(image.Image('image1.jpg'))
+        self.ic.add(image.Image('image2.jpg'))
+        filename = self.files + os.sep + 'save.ftn'
+        self.ic.saveToPickle(filename)
         ic2 = image.ImageContainer()
-        ic2.loadPickle(filename)
-        self.assertTrue(self.ic.images.values() == ic2.images.values())
+        ic2.loadFromPickle(filename)
+        self.assertTrue(len(self.ic) == len(ic2))
+        for image1, image2 in zip(self.ic, ic2):
+            self.assertTrue(image1.name == image2.name)
+        os.unlink(filename)
 
 
 if __name__ == '__main__':

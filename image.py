@@ -88,16 +88,16 @@ class ImageContainer(object):
         del image
         self.dirty = True
 
-    def savePickle(self, filename):
+    def saveToPickle(self, filename):
         file = open(filename, mode='wb')
         pickle.dump(self.images, file, pickle.DEFAULT_PROTOCOL)
         file.close()
 
-    def loadPickle(self, filename):
+    def loadFromPickle(self, filename):
         file = open(filename, mode='rb')
         values = pickle.load(file)
         for value in values.values():
-            print('Value: "{}", type: {}'.format(value, type(value)))
+            # print('Value: "{}", type: {}'.format(value, type(value)))
             self.add(value)
         file.close()
 
