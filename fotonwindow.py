@@ -8,6 +8,27 @@ import util
 import scene
 
 
+class PointItem(QtGui.QGraphicsPixmapItem):
+
+    # make this to work
+    pointChange = QtCore.pyqtSignal()
+
+    def __init__(self, pointId, x, y, pixmap=None, scene=None):
+        path = os.getcwd() + os.sep + 'workstuff' + os.sep + 'point.png'
+        super(PointItem, self).__init__(QtGui.QPixmap(path), scene)
+
+        self.id = pointId
+        self.setPos(x, y)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+
+    def itemChange(self, change, value):
+        if change == QtGui.QGraphicsItem.ItemPositionChange:
+            print('Item {} position change: "{}", "{}"'.format(self.id, change, value))
+        return value
+
+
 class FotonWindow(QtGui.QMainWindow):
 
     def __init__(self):
@@ -72,17 +93,8 @@ class FotonWindow(QtGui.QMainWindow):
         self.scene.addPixmap(pixmap)
         # self.scene.setSceneRect(p.boundingRect())
         for id, coords in img.annotations():
-            self.drawPoint(int(coords[0]), int(coords[1]))
+            self.scene.addItem(PointItem(id, int(coords[0]), int(coords[1])))
         self.currentImage = img
-
-    def draw(self, event):
-        print('image clicked at pos ({};{})'.format(event.pos().x(), event.pos().y()))
-        self.drawPoint(event.pos().x(), event.pos().y())
-
-    def drawPoint(self, x, y):
-        e = self.scene.addEllipse(x, y, 10, 10)
-        e.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        e.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)
