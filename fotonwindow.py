@@ -8,10 +8,20 @@ import util
 import scene
 
 
+class ItemSignal(QtCore.QObject):
+
+    pointChange = QtCore.pyqtSignal(QtGui.QGraphicsPixmapItem)
+
+    def __init__(self):
+        super(ItemSignal, self).__init__()
+
+    def emit(self, pixmapItem):
+        self.pointChange.emit(pixmapItem)
+
+
 class PointItem(QtGui.QGraphicsPixmapItem):
 
-    # make this to work
-    pointChange = QtCore.pyqtSignal()
+    itemSignal = ItemSignal()
 
     def __init__(self, pointId, x, y, pixmap=None, scene=None):
         path = os.getcwd() + os.sep + 'workstuff' + os.sep + 'point.png'
@@ -23,9 +33,13 @@ class PointItem(QtGui.QGraphicsPixmapItem):
         self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
+    def position(self):
+        return self.pos()
+
     def itemChange(self, change, value):
-        if change == QtGui.QGraphicsItem.ItemPositionChange:
-            print('Item {} position change: "{}", "{}"'.format(self.id, change, value))
+        if change == QtGui.QGraphicsItem.ItemPositionHasChanged:
+            print('Item {} position changed: "{}"'.format(self.id, value))
+        self.itemSignal.emit(self)
         return value
 
 
@@ -93,8 +107,14 @@ class FotonWindow(QtGui.QMainWindow):
         self.scene.addPixmap(pixmap)
         # self.scene.setSceneRect(p.boundingRect())
         for id, coords in img.annotations():
-            self.scene.addItem(PointItem(id, int(coords[0]), int(coords[1])))
+            p = PointItem(id, int(coords[0]), int(coords[1]))
+            p.itemSignal.pointChange.connect(self.pointChange)
+            self.scene.addItem(p)
         self.currentImage = img
+
+    def pointChange(self, value):
+        print("FotonWindow.pointChange: id: {}, pos: {}".format(
+            value.id, value.position()))
 
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)
