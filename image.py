@@ -94,6 +94,7 @@ class ImageContainer(object):
         file.close()
 
     def loadFromPickle(self, filename):
+        self.images.clear()
         file = open(filename, mode='rb')
         values = pickle.load(file)
         for value in values.values():

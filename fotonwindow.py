@@ -21,9 +21,8 @@ class ItemSignal(QtCore.QObject):
 
 class PointItem(QtGui.QGraphicsPixmapItem):
 
-    itemSignal = ItemSignal()
-
     def __init__(self, pointId, x, y, pixmap=None, scene=None):
+        self.itemSignal = ItemSignal()
         path = os.getcwd() + os.sep + 'workstuff' + os.sep + 'point.png'
         super(PointItem, self).__init__(QtGui.QPixmap(path), scene)
 
@@ -32,9 +31,19 @@ class PointItem(QtGui.QGraphicsPixmapItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        self.setAcceptDrops(True)
 
     def position(self):
         return self.pos()
+
+    def dragLeaveEvent(self, event):
+        print('Item.gragLeaveEvent: '.format(event))
+
+    def dropEvent(self, event):
+        print('Item.dropEvent: {}'.format(event))
+
+    def dragMoveEvent(self, event):
+        print('Item.dragMoveEvent: {}'.format(event))
 
     def itemChange(self, change, value):
         if change == QtGui.QGraphicsItem.ItemPositionHasChanged:
@@ -62,8 +71,7 @@ class FotonWindow(QtGui.QMainWindow):
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
 
         self.scene = scene.Scene()
-        self.scene.setSceneRect(QtCore.QRectF(0, 0, 800, 600))
-        self.view = QtGui.QGraphicsView(self.scene)
+        self.view = scene.View(self.scene)
 
         self.currentIdLabel.setText('Номер точки: <не выбрано>')
 
@@ -112,9 +120,9 @@ class FotonWindow(QtGui.QMainWindow):
             self.scene.addItem(p)
         self.currentImage = img
 
-    def pointChange(self, value):
+    def pointChange(self, point):
         print("FotonWindow.pointChange: id: {}, pos: {}".format(
-            value.id, value.position()))
+            point.id, point.position()))
 
     def setupMenu(self):
         menu = QtGui.QMenu('Файл', self)
@@ -145,6 +153,9 @@ class FotonWindow(QtGui.QMainWindow):
             os.getcwd())
         if(filename):
             self.images.saveToPickle(filename)
+
+    def fileLoad(self):
+        pass
 
     def fileExport(self):
         pass
